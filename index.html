@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Workout</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      padding: 16px;
+      padding-bottom: 100px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 20px;
+      margin-bottom: 16px;
+      color: #e94560;
+    }
+
+    .days-nav {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      margin-bottom: 20px;
+      padding-bottom: 4px;
+    }
+
+    .day-btn {
+      flex-shrink: 0;
+      padding: 8px 12px;
+      border: 1px solid #333;
+      border-radius: 8px;
+      background: #16213e;
+      color: #aaa;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+      min-width: 44px;
+    }
+
+    .day-btn.active {
+      background: #e94560;
+      color: #fff;
+      border-color: #e94560;
+      font-weight: bold;
+    }
+
+    .day-btn.today {
+      border-color: #e94560;
+    }
+
+    .workout-card {
+      background: #16213e;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .workout-type {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #e94560;
+      margin-bottom: 4px;
+    }
+
+    .workout-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .workout-duration {
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 16px;
+    }
+
+    .rest-day {
+      text-align: center;
+      padding: 40px 16px;
+    }
+
+    .rest-day p {
+      color: #aaa;
+      font-size: 14px;
+      margin-top: 12px;
+    }
+
+    .exercise {
+      background: #0f3460;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+
+    .exercise-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .exercise-name {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .exercise-sets {
+      font-size: 13px;
+      color: #e94560;
+      font-weight: 600;
+    }
+
+    .exercise-detail {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 4px;
+    }
+
+    .exercise-desc {
+      font-size: 12px;
+      color: #888;
+      margin-top: 6px;
+      line-height: 1.4;
+      display: none;
+    }
+
+    .exercise.expanded .exercise-desc {
+      display: block;
+    }
+
+    .exercise-toggle {
+      font-size: 11px;
+      color: #e94560;
+      margin-top: 6px;
+      display: inline-block;
+    }
+
+    .section-title {
+      font-size: 13px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      margin-top: 16px;
+    }
+
+    .info-box {
+      background: #0f3460;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .info-label {
+      color: #aaa;
+      font-size: 12px;
+    }
+
+    .info-value {
+      font-weight: 600;
+      color: #e94560;
+    }
+
+    .cardio-option {
+      background: #0f3460;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+
+    .cardio-option-title {
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .cardio-option-detail {
+      font-size: 13px;
+      color: #aaa;
+      line-height: 1.5;
+    }
+
+    #app { }
+  </style>
+</head>
+<body>
+
+  <h1>My Workout</h1>
+  <div class="days-nav" id="daysNav"></div>
+  <div id="app"></div>
+
+  <script>
+    var DAYS = ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+    var DAYS_FULL = ['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота'];
+
+    function createEl(tag, className, text) {
+      var el = document.createElement(tag);
+      if (className) el.className = className;
+      if (text) el.textContent = text;
+      return el;
+    }
+
+    function renderDaysNav(selectedDay) {
+      var nav = document.getElementById('daysNav');
+      while (nav.firstChild) nav.removeChild(nav.firstChild);
+      var order = [1, 2, 3, 4, 5, 6, 0];
+      var today = new Date().getDay();
+
+      order.forEach(function(dayIndex) {
+        var btn = createEl('div', 'day-btn', DAYS[dayIndex]);
+        if (dayIndex === selectedDay) btn.classList.add('active');
+        if (dayIndex === today && dayIndex !== selectedDay) btn.classList.add('today');
+        btn.addEventListener('click', function() { showDay(dayIndex); });
+        nav.appendChild(btn);
+      });
+    }
+
+    function buildExerciseEl(ex, index) {
+      var div = createEl('div', 'exercise');
+      div.id = 'ex-' + index;
+
+      var header = createEl('div', 'exercise-header');
+      header.appendChild(createEl('span', 'exercise-name', ex.name));
+      header.appendChild(createEl('span', 'exercise-sets', ex.sets));
+      div.appendChild(header);
+
+      if (ex.detail) {
+        div.appendChild(createEl('div', 'exercise-detail', ex.detail));
+      }
+
+      if (ex.desc) {
+        var descEl = createEl('div', 'exercise-desc', ex.desc);
+        div.appendChild(descEl);
+
+        var toggleEl = createEl('div', 'exercise-toggle', 'Як робити ▼');
+        div.appendChild(toggleEl);
+
+        div.addEventListener('click', function() {
+          div.classList.toggle('expanded');
+          toggleEl.textContent = div.classList.contains('expanded') ? 'Сховати ▲' : 'Як робити ▼';
+        });
+      }
+
+      return div;
+    }
+
+    function buildCardioContent() {
+      var frag = document.createDocumentFragment();
+
+      var pulseBox = createEl('div', 'info-box');
+      pulseBox.appendChild(createEl('span', 'info-label', 'Пульс: '));
+      pulseBox.appendChild(createEl('span', 'info-value', '120-140'));
+      frag.appendChild(pulseBox);
+
+      frag.appendChild(createEl('div', 'section-title', 'Обери варіант'));
+
+      // Velotrenazher
+      var opt1 = createEl('div', 'cardio-option');
+      opt1.appendChild(createEl('div', 'cardio-option-title', 'Велотренажер'));
+      opt1.appendChild(createEl('div', 'cardio-option-detail', '30-40 хв, тримай пульс 120-140. Якщо пульс нижче — додай навантаження.'));
+      frag.appendChild(opt1);
+
+      // Shadow boxing
+      var opt2 = createEl('div', 'cardio-option');
+      opt2.appendChild(createEl('div', 'cardio-option-title', 'Shadow Boxing'));
+      var detail2 = createEl('div', 'cardio-option-detail');
+      var lines2 = [
+        'Розминка 3 хв',
+        'Удари лівою: 100 разів',
+        'Удари правою: 100 разів',
+        'Повторити 2-3 серії',
+        'Уклони: 50-100 разів',
+        'Маятник: 2-3 хв',
+        'Комбінації: 10 хв'
+      ];
+      lines2.forEach(function(line, i) {
+        detail2.appendChild(document.createTextNode(line));
+        if (i < lines2.length - 1) detail2.appendChild(document.createElement('br'));
+      });
+      opt2.appendChild(detail2);
+      frag.appendChild(opt2);
+
+      // Skakalka
+      var opt3 = createEl('div', 'cardio-option');
+      opt3.appendChild(createEl('div', 'cardio-option-title', 'Скакалка'));
+      var detail3 = createEl('div', 'cardio-option-detail');
+      detail3.appendChild(document.createTextNode('1 хв стрибки → 30 сек відпочинок'));
+      detail3.appendChild(document.createElement('br'));
+      detail3.appendChild(document.createTextNode('Повторити 15-20 раундів'));
+      opt3.appendChild(detail3);
+      frag.appendChild(opt3);
+
+      return frag;
+    }
+
+    var exercises = {
+      wednesday: [
+        { name: 'Розминка', sets: '3-5 хв', desc: 'Розігрій суглоби: обертання рук, плечей, нахили. Легке кардіо 2-3 хв.' },
+        { name: 'Віджимання', sets: '3 × 10-15', desc: 'Руки на ширині плечей, тіло рівне як дошка. Опускаєшся поки груди майже торкнуться підлоги, піднімаєшся. Якщо важко — можна з колін.' },
+        { name: 'Жим гантелей вгору', sets: '3 × 10-12', detail: '6-8 кг', desc: 'Сидячи або стоячи. Гантелі на рівні плечей, долоні вперед. Вижимаєш вгору над головою, руки повністю випрямляються. Повільно опускаєш назад.' },
+        { name: 'Тяга гантелей в нахилі', sets: '3 × 10-12', detail: '8-10 кг, кожна рука', desc: 'Нахились вперед на 45°, спина рівна. Гантель в одній руці, тягни до пояса, лікоть вздовж тіла. Друга рука на коліні для опори. Зміни руку.' },
+        { name: 'Біцепс з гантелями', sets: '3 × 12', detail: '4-6 кг', desc: 'Стоїш рівно, руки з гантелями вздовж тіла. Згинаєш руки в ліктях, піднімаючи гантелі до плечей. Лікті нерухомі, працює тільки передпліччя.' },
+        { name: 'Тріцепс за головою', sets: '3 × 12', detail: '4-6 кг', desc: 'Одна гантель двома руками за головою. Лікті вгору біля голови. Випрямляєш руки вгору, потім повільно опускаєш за голову. Лікті залишаються на місці.' }
+      ],
+      friday: [
+        { name: 'Розминка', sets: '3-5 хв', desc: 'Розігрій суглоби: обертання колін, тазу, нахили. Легке кардіо 2-3 хв.' },
+        { name: 'Напівприсяди з гантелями', sets: '3 × 15', detail: '8-12 кг', desc: 'Гантелі в руках вздовж тіла або на плечах. Ноги на ширині плечей. Присідаєш до 90° в колінах (не глибше — бережи коліна). Спина рівна, коліна не виходять за носки.' },
+        { name: 'Випади', sets: '3 × 10 (кожна нога)', detail: '6-8 кг', desc: 'Гантелі в руках. Крок вперед однією ногою, опускаєшся поки обидва коліна не зігнуться на 90°. Заднє коліно майже торкається підлоги. Повертаєшся, зміна ноги.' },
+        { name: 'Румунська тяга', sets: '3 × 12', detail: '8-10 кг', desc: 'Стоїш рівно, гантелі в руках перед собою. Нахиляєшся вперед, відводячи таз назад. Ноги майже рівні (легкий згин в колінах). Відчуваєш розтяжку ззаду стегна. Повертаєшся.' },
+        { name: 'Підйом на носки', sets: '3 × 20', detail: '10-12 кг', desc: 'Стоїш рівно, гантелі в руках. Піднімаєшся на носки максимально високо, затримка 1 сек, повільно опускаєшся.' },
+        { name: 'Планка', sets: '3 × 30-60 сек', desc: 'Упор лежачи на передпліччях. Тіло рівне від голови до п\'ят — не провисай і не піднімай таз. Тримай 30-60 сек.' },
+        { name: 'Скручування', sets: '3 × 15-20', desc: 'Лежиш на спині, ноги зігнуті. Руки за головою або на грудях. Піднімаєш плечі від підлоги, скручуючи корпус. Поперек залишається на підлозі.' }
+      ],
+      sunday: [
+        { name: 'Розминка', sets: '3-5 хв', desc: 'Розігрій все тіло: обертання суглобів, легке кардіо 2-3 хв.' },
+        { name: 'Віджимання', sets: '2 × 12-15', desc: 'Руки на ширині плечей, тіло рівне як дошка. Опускаєшся поки груди майже торкнуться підлоги, піднімаєшся.' },
+        { name: 'Напівприсяди', sets: '2 × 15', detail: '8-12 кг', desc: 'Гантелі в руках. Присідаєш до 90° в колінах. Спина рівна, коліна не виходять за носки.' },
+        { name: 'Тяга гантелей', sets: '2 × 10-12', detail: '8-10 кг', desc: 'Нахились вперед на 45°, спина рівна. Гантель в одній руці, тягни до пояса. Зміни руку.' },
+        { name: 'Випади', sets: '2 × 10 (кожна нога)', detail: '6-8 кг', desc: 'Крок вперед, опускаєшся поки обидва коліна 90°. Заднє коліно майже торкається підлоги.' },
+        { name: 'Жим вгору', sets: '2 × 10-12', detail: '6-8 кг', desc: 'Гантелі на рівні плечей. Вижимаєш вгору над головою. Повільно опускаєш.' },
+        { name: 'Планка', sets: '2 × 45 сек', desc: 'Упор на передпліччях. Тіло рівне від голови до п\'ят. Тримай.' }
+      ]
+    };
+
+    function showDay(dayIndex) {
+      var app = document.getElementById('app');
+      while (app.firstChild) app.removeChild(app.firstChild);
+      renderDaysNav(dayIndex);
+
+      var card = createEl('div', 'workout-card');
+
+      // Monday - rest
+      if (dayIndex === 1) {
+        card.classList.add('rest-day');
+        card.appendChild(createEl('div', 'workout-title', 'День відпочинку'));
+        card.appendChild(createEl('p', null, 'Відновлення. Можна легку прогулянку.'));
+        app.appendChild(card);
+        return;
+      }
+
+      // Cardio days: Tue(2), Thu(4), Sat(6)
+      if (dayIndex === 2 || dayIndex === 4 || dayIndex === 6) {
+        card.appendChild(createEl('div', 'workout-type', 'Кардіо'));
+        card.appendChild(createEl('div', 'workout-title', DAYS_FULL[dayIndex] + ' — Кардіо'));
+        card.appendChild(createEl('div', 'workout-duration', '30-40 хв'));
+        card.appendChild(buildCardioContent());
+        app.appendChild(card);
+        return;
+      }
+
+      // Strength days
+      var titles = { 3: 'Силові: верх тіла', 5: 'Силові: низ + корпус', 0: 'Силові: все тіло' };
+      var exKeys = { 3: 'wednesday', 5: 'friday', 0: 'sunday' };
+
+      card.appendChild(createEl('div', 'workout-type', 'Силові'));
+      card.appendChild(createEl('div', 'workout-title', DAYS_FULL[dayIndex] + ' — ' + titles[dayIndex]));
+      card.appendChild(createEl('div', 'workout-duration', '30-40 хв'));
+
+      var restBox = createEl('div', 'info-box');
+      restBox.appendChild(createEl('span', 'info-label', 'Відпочинок: '));
+      restBox.appendChild(createEl('span', 'info-value', '60-90 сек між підходами'));
+      card.appendChild(restBox);
+
+      card.appendChild(createEl('div', 'section-title', 'Вправи'));
+
+      var exList = exercises[exKeys[dayIndex]];
+      exList.forEach(function(ex, i) {
+        card.appendChild(buildExerciseEl(ex, i));
+      });
+
+      app.appendChild(card);
+    }
+
+    // Show today on load
+    showDay(new Date().getDay());
+  </script>
+</body>
+</html>
