@@ -101,21 +101,27 @@
         "macros": { "protein": 54, "fat": 23, "carbs": 64 }
       },
       "dinner": {
-        "description": "",
-        "details": [],
-        "calories": 0,
-        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
+        "description": "Вермішель 100г + М'ясо болоньезе ~275г + Салат з буряку 100г",
+        "details": [
+          "Вермішель варена (100г): ~140 ккал",
+          "М'ясо болоньезе (~275г): ~330 ккал",
+          "Салат з буряку (100г): ~95 ккал"
+        ],
+        "calories": 565,
+        "macros": { "protein": 29, "fat": 26, "carbs": 51 }
       },
       "snacks": {
-        "description": "",
-        "details": [],
-        "calories": 0,
-        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
+        "description": "Кешью жменя (~30г)",
+        "details": [
+          "Кешью (~30г): ~170 ккал"
+        ],
+        "calories": 170,
+        "macros": { "protein": 5, "fat": 13, "carbs": 9 }
       },
-      "totalCalories": 1470,
+      "totalCalories": 2205,
       "targetCalories": 2400,
-      "remaining": 930,
-      "totalMacros": { "protein": 91, "fat": 55, "carbs": 107 },
+      "remaining": 195,
+      "totalMacros": { "protein": 125, "fat": 94, "carbs": 167 },
       "targetMacros": { "protein": 160, "fat": 70, "carbs": 280 }
     },
     "type": "strength",
