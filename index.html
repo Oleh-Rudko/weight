@@ -367,6 +367,21 @@
       flex-shrink: 0;
     }
 
+    .chart-tooltip {
+      position: absolute;
+      background: #0f3460;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #eee;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 10;
+      line-height: 1.6;
+      display: none;
+    }
+
     .sleep-phases {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -851,9 +866,10 @@
       var chartW = w - padL - padR;
       var chartH = h - padT - padB;
 
-      if (labels.length === 0) return;
+      var dots = [];
+      if (labels.length === 0) return dots;
 
-      // Grid lines (no Y labels — each series has its own scale)
+      // Grid lines
       ctx.strokeStyle = '#333';
       ctx.lineWidth = 0.5;
       for (var g = 0; g <= 4; g++) {
@@ -904,8 +920,11 @@
           ctx.beginPath();
           ctx.arc(x, y, 4, 0, Math.PI * 2);
           ctx.fill();
+          dots.push({ x: x, y: y, value: v, color: s.color, title: s.title, unit: s.unit, dateIndex: i });
         });
       });
+
+      return dots;
     }
 
     function showStats() {
@@ -939,7 +958,7 @@
       metrics.forEach(function(m) {
         var values = workoutData.map(function(d) { return d[m.key]; });
         if (values.every(function(v) { return v == null; })) return;
-        seriesData.push({ values: values, color: m.color });
+        seriesData.push({ values: values, color: m.color, title: m.title, unit: m.unit });
 
         var item = createEl('div', 'legend-item');
         var dot = createEl('div', 'legend-dot');
@@ -956,9 +975,81 @@
 
       var canvas = document.createElement('canvas');
       card.appendChild(canvas);
+
+      var tooltip = createEl('div', 'chart-tooltip');
+      card.style.position = 'relative';
+      card.appendChild(tooltip);
       app.appendChild(card);
 
-      drawCombinedChart(canvas, labels, seriesData);
+      var dots = drawCombinedChart(canvas, labels, seriesData);
+
+      function handleMove(clientX, clientY) {
+        var rect = canvas.getBoundingClientRect();
+        var mx = clientX - rect.left;
+        var my = clientY - rect.top;
+
+        // Find closest dot within 24px
+        var closest = null;
+        var closestDist = 24;
+        dots.forEach(function(d) {
+          var dist = Math.sqrt((d.x - mx) * (d.x - mx) + (d.y - my) * (d.y - my));
+          if (dist < closestDist) {
+            closestDist = dist;
+            closest = d;
+          }
+        });
+
+        if (!closest) {
+          tooltip.style.display = 'none';
+          return;
+        }
+
+        // Build tooltip: show all series values for that date
+        while (tooltip.firstChild) tooltip.removeChild(tooltip.firstChild);
+
+        var dateDiv = createEl('div', null, labels[closest.dateIndex]);
+        dateDiv.style.color = '#888';
+        dateDiv.style.marginBottom = '4px';
+        tooltip.appendChild(dateDiv);
+
+        seriesData.forEach(function(s) {
+          var v = s.values[closest.dateIndex];
+          if (v != null) {
+            var row = document.createElement('div');
+            var label = createEl('span', null, s.title + ': ');
+            label.style.color = s.color;
+            row.appendChild(label);
+            row.appendChild(document.createTextNode(v + (s.unit ? ' ' + s.unit : '')));
+            tooltip.appendChild(row);
+          }
+        });
+
+        tooltip.style.display = 'block';
+
+        // Position tooltip relative to card
+        var cardRect = card.getBoundingClientRect();
+        var tx = closest.x + rect.left - cardRect.left + 12;
+        var ty = closest.y + rect.top - cardRect.top - 16;
+        if (tx + tooltip.offsetWidth > card.offsetWidth - 8) {
+          tx = closest.x + rect.left - cardRect.left - tooltip.offsetWidth - 12;
+        }
+        tooltip.style.left = tx + 'px';
+        tooltip.style.top = ty + 'px';
+      }
+
+      canvas.addEventListener('mousemove', function(e) {
+        handleMove(e.clientX, e.clientY);
+      });
+      canvas.addEventListener('mouseleave', function() {
+        tooltip.style.display = 'none';
+      });
+      canvas.addEventListener('touchstart', function(e) {
+        var t = e.touches[0];
+        handleMove(t.clientX, t.clientY);
+      });
+      canvas.addEventListener('touchend', function() {
+        tooltip.style.display = 'none';
+      });
     }
 
     // Tab handlers
