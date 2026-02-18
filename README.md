@@ -8,10 +8,13 @@ Track weight, nutrition and exercises to reach a healthy weight (95-98 kg).
 
 ## Current Status
 
-- Starting weight: 110.60 kg
-- Target weight: 95-98 kg
-- Plan: 6 days/week (3 cardio + 3 strength), 25-40 min
-- Approach: slow and steady (200-400 g/week)
+- **Started:** 17.02.2026
+- **Starting weight:** 110.60 kg (07.02.2025)
+- **Current weight:** 110.40 kg (-0.20 kg)
+- **Target weight:** 95-98 kg
+- **Plan:** 6 days/week (3 cardio + 3 strength), 25-40 min
+- **Approach:** slow and steady (200-400 g/week)
+- **First workout:** Cardio boxing, 21 min ✅
 
 ## Files
 

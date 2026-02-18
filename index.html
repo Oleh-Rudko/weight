@@ -26,6 +26,32 @@
       color: #e94560;
     }
 
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #333;
+      padding-bottom: 8px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      color: #aaa;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: #e94560;
+      color: #fff;
+    }
+
     .days-nav {
       display: flex;
       gap: 6px;
@@ -193,16 +219,135 @@
       line-height: 1.5;
     }
 
+    .metrics-card {
+      background: #16213e;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .metric-item {
+      background: #0f3460;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .metric-value {
+      font-size: 18px;
+      font-weight: bold;
+      color: #e94560;
+    }
+
+    .nutrition-card {
+      background: #16213e;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .nutrition-summary {
+      background: #0f3460;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .calories-main {
+      font-size: 24px;
+      font-weight: bold;
+      color: #e94560;
+    }
+
+    .calories-label {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 2px;
+    }
+
+    .calories-target {
+      text-align: right;
+    }
+
+    .calories-target-value {
+      font-size: 18px;
+      font-weight: 600;
+      color: #4ecca3;
+    }
+
+    .meal-item {
+      background: #0f3460;
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .meal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .meal-name {
+      font-size: 13px;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .meal-calories {
+      font-size: 15px;
+      font-weight: bold;
+      color: #e94560;
+    }
+
+    .meal-description {
+      font-size: 13px;
+      color: #ccc;
+      line-height: 1.4;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 40px 16px;
+      color: #aaa;
+    }
+
     #app { }
   </style>
 </head>
 <body>
 
   <h1>My Workout</h1>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabWorkout">План тренувань</button>
+    <button class="tab-btn" id="tabTracking">Мої дані</button>
+  </div>
+
   <div class="days-nav" id="daysNav"></div>
   <div id="app"></div>
 
   <script>
+    var workoutData = [];
     var DAYS = ['Нд', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
     var DAYS_FULL = ['Неділя', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', "П'ятниця", 'Субота'];
 
@@ -384,8 +529,223 @@
       app.appendChild(card);
     }
 
-    // Show today on load
-    showDay(new Date().getDay());
+    // Tabs and tracking mode
+    var currentMode = 'workout';
+    var selectedTrackingDate = null;
+
+    function switchTab(mode) {
+      currentMode = mode;
+
+      var tabWorkout = document.getElementById('tabWorkout');
+      var tabTracking = document.getElementById('tabTracking');
+
+      if (mode === 'workout') {
+        tabWorkout.classList.add('active');
+        tabTracking.classList.remove('active');
+        showDay(new Date().getDay());
+      } else {
+        tabWorkout.classList.remove('active');
+        tabTracking.classList.add('active');
+        showTrackingData();
+      }
+    }
+
+    function showTrackingData() {
+      var nav = document.getElementById('daysNav');
+      while (nav.firstChild) nav.removeChild(nav.firstChild);
+
+      var app = document.getElementById('app');
+      while (app.firstChild) app.removeChild(app.firstChild);
+
+      if (!workoutData || workoutData.length === 0) {
+        app.appendChild(createEl('div', 'no-data', 'Немає даних для відображення'));
+        return;
+      }
+
+      // Create date buttons
+      workoutData.forEach(function(entry) {
+        var btn = createEl('div', 'day-btn', entry.date.substring(5));
+        if (selectedTrackingDate === entry.date) btn.classList.add('active');
+        btn.addEventListener('click', function() {
+          selectedTrackingDate = entry.date;
+          showDayTracking(entry);
+        });
+        nav.appendChild(btn);
+      });
+
+      // Show first day by default
+      if (!selectedTrackingDate && workoutData.length > 0) {
+        selectedTrackingDate = workoutData[0].date;
+      }
+
+      var dayData = workoutData.find(function(d) { return d.date === selectedTrackingDate; });
+      if (dayData) showDayTracking(dayData);
+    }
+
+    function showDayTracking(dayData) {
+      var app = document.getElementById('app');
+      while (app.firstChild) app.removeChild(app.firstChild);
+
+      // Update nav
+      var nav = document.getElementById('daysNav');
+      var btns = nav.querySelectorAll('.day-btn');
+      btns.forEach(function(btn) {
+        btn.classList.remove('active');
+        if (btn.textContent === dayData.date.substring(5)) {
+          btn.classList.add('active');
+        }
+      });
+
+      // Metrics card
+      var metricsCard = createEl('div', 'metrics-card');
+      metricsCard.appendChild(createEl('div', 'workout-type', dayData.dayOfWeek + ' — ' + dayData.date));
+
+      var grid = createEl('div', 'metrics-grid');
+
+      var weightItem = createEl('div', 'metric-item');
+      weightItem.appendChild(createEl('div', 'metric-label', 'Вага'));
+      weightItem.appendChild(createEl('div', 'metric-value', dayData.morningWeight + ' кг'));
+      grid.appendChild(weightItem);
+
+      var fatItem = createEl('div', 'metric-item');
+      fatItem.appendChild(createEl('div', 'metric-label', 'Body Fat'));
+      fatItem.appendChild(createEl('div', 'metric-value', dayData.bodyFatPercent + '%'));
+      grid.appendChild(fatItem);
+
+      var visceralItem = createEl('div', 'metric-item');
+      visceralItem.appendChild(createEl('div', 'metric-label', 'Віцеральний жир'));
+      visceralItem.appendChild(createEl('div', 'metric-value', dayData.visceralFat));
+      grid.appendChild(visceralItem);
+
+      var muscleItem = createEl('div', 'metric-item');
+      muscleItem.appendChild(createEl('div', 'metric-label', "М'язи"));
+      muscleItem.appendChild(createEl('div', 'metric-value', dayData.musclePercent + '%'));
+      grid.appendChild(muscleItem);
+
+      metricsCard.appendChild(grid);
+      app.appendChild(metricsCard);
+
+      // Nutrition card
+      if (dayData.nutrition) {
+        var nutritionCard = createEl('div', 'nutrition-card');
+        nutritionCard.appendChild(createEl('div', 'workout-type', 'Харчування'));
+
+        var summary = createEl('div', 'nutrition-summary');
+        var left = createEl('div');
+        left.appendChild(createEl('div', 'calories-main', dayData.nutrition.totalCalories + ' ккал'));
+        left.appendChild(createEl('div', 'calories-label', "з'їдено"));
+        summary.appendChild(left);
+
+        var right = createEl('div', 'calories-target');
+        right.appendChild(createEl('div', 'calories-target-value', dayData.nutrition.remaining + ' ккал'));
+        right.appendChild(createEl('div', 'calories-label', 'залишилось'));
+        summary.appendChild(right);
+
+        nutritionCard.appendChild(summary);
+
+        // Meals
+        var meals = [
+          { name: 'Сніданок', data: dayData.nutrition.breakfast },
+          { name: 'Обід', data: dayData.nutrition.lunch },
+          { name: 'Вечеря', data: dayData.nutrition.dinner },
+          { name: 'Перекуси', data: dayData.nutrition.snacks }
+        ];
+
+        meals.forEach(function(meal) {
+          if (meal.data && meal.data.calories > 0) {
+            var mealItem = createEl('div', 'meal-item');
+
+            var header = createEl('div', 'meal-header');
+            header.appendChild(createEl('div', 'meal-name', meal.name));
+            header.appendChild(createEl('div', 'meal-calories', meal.data.calories + ' ккал'));
+            mealItem.appendChild(header);
+
+            if (meal.data.description) {
+              mealItem.appendChild(createEl('div', 'meal-description', meal.data.description));
+            }
+
+            nutritionCard.appendChild(mealItem);
+          }
+        });
+
+        app.appendChild(nutritionCard);
+      }
+
+      // Workout card
+      if (dayData.type !== 'rest') {
+        var workoutCard = createEl('div', 'workout-card');
+        workoutCard.appendChild(createEl('div', 'workout-type', dayData.type === 'cardio' ? 'Кардіо' : 'Силові'));
+        workoutCard.appendChild(createEl('div', 'workout-title', dayData.title));
+        workoutCard.appendChild(createEl('div', 'workout-duration', dayData.duration + ' хв'));
+
+        if (dayData.feeling) {
+          var feelingBox = createEl('div', 'info-box');
+          feelingBox.appendChild(createEl('span', 'info-label', 'Самопочуття: '));
+          feelingBox.appendChild(createEl('span', 'info-value', dayData.feeling + '/5'));
+          workoutCard.appendChild(feelingBox);
+        }
+
+        if (dayData.appleWatch) {
+          workoutCard.appendChild(createEl('div', 'section-title', 'Apple Watch'));
+
+          var awBox = createEl('div', 'info-box');
+          var awLabel1 = createEl('span', 'info-label', 'Активні калорії: ');
+          var awValue1 = createEl('span', 'info-value', dayData.appleWatch.activeCalories + ' ккал');
+          awBox.appendChild(awLabel1);
+          awBox.appendChild(awValue1);
+          awBox.appendChild(document.createElement('br'));
+
+          var awLabel2 = createEl('span', 'info-label', 'Середній пульс: ');
+          var awValue2 = createEl('span', 'info-value', dayData.appleWatch.avgHeartRate + ' bpm');
+          awBox.appendChild(awLabel2);
+          awBox.appendChild(awValue2);
+          awBox.appendChild(document.createElement('br'));
+
+          var awLabel3 = createEl('span', 'info-label', 'Макс пульс: ');
+          var awValue3 = createEl('span', 'info-value', dayData.appleWatch.maxHeartRate + ' bpm');
+          awBox.appendChild(awLabel3);
+          awBox.appendChild(awValue3);
+
+          workoutCard.appendChild(awBox);
+        }
+
+        if (dayData.notes) {
+          workoutCard.appendChild(createEl('div', 'section-title', 'Нотатки'));
+          var notesBox = createEl('div', 'info-box');
+          notesBox.textContent = dayData.notes;
+          workoutCard.appendChild(notesBox);
+        }
+
+        app.appendChild(workoutCard);
+      }
+    }
+
+    // Tab handlers
+    document.getElementById('tabWorkout').addEventListener('click', function() {
+      switchTab('workout');
+    });
+
+    document.getElementById('tabTracking').addEventListener('click', function() {
+      switchTab('tracking');
+    });
+
+    // Load data from logs and show today
+    function loadData() {
+      var now = new Date();
+      var file = 'logs/' + now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '.json';
+      fetch(file)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          workoutData = data;
+          showDay(now.getDay());
+        })
+        .catch(function() {
+          workoutData = [];
+          showDay(now.getDay());
+        });
+    }
+
+    loadData();
   </script>
 </body>
 </html>

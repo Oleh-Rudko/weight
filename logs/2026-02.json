@@ -1,0 +1,166 @@
+[
+  {
+    "date": "2026-02-17",
+    "dayOfWeek": "Вівторок",
+    "morningWeight": 110.4,
+    "bodyFatPercent": 30.6,
+    "visceralFat": 21.0,
+    "bodyFatMass": 33.8,
+    "musclePercent": 63.4,
+    "nutrition": {
+      "breakfast": {
+        "description": "Бутерброд з маслом і сиром + Кава + Мандаринка",
+        "details": [
+          "Бутерброд з маслом і сиром (1 шматок): ~270 ккал",
+          "Кава чорна + 15 г молока: ~10 ккал",
+          "Маленька мандаринка: ~30 ккал"
+        ],
+        "calories": 310
+      },
+      "lunch": {
+        "description": "Суп + Лазанья + Салат + Банан",
+        "details": [
+          "Суп (350-400 г): ~200 ккал",
+          "Лазанья (350-400 г): ~500 ккал",
+          "Салат: ~175 ккал",
+          "Банан (1 шт): ~100 ккал"
+        ],
+        "calories": 975
+      },
+      "dinner": {
+        "description": "Рис з овочами + М'ясо + Броколі",
+        "details": [
+          "Рис з овочами (150-200 г): ~280 ккал",
+          "М'ясо (120 г): ~220 ккал",
+          "Броколі (150 г): ~80 ккал"
+        ],
+        "calories": 580
+      },
+      "snacks": {
+        "description": "",
+        "details": [],
+        "calories": 0
+      },
+      "totalCalories": 1865,
+      "targetCalories": 2000,
+      "remaining": 135
+    },
+    "type": "cardio",
+    "title": "Кардіо - бокс",
+    "cardioType": "Shadow Boxing",
+    "duration": 21,
+    "feeling": 3.5,
+    "appleWatch": {
+      "duration": 21,
+      "activeCalories": 221,
+      "totalCalories": 271,
+      "avgHeartRate": 136,
+      "maxHeartRate": 169
+    },
+    "notes": ""
+  },
+  {
+    "date": "2026-02-18",
+    "dayOfWeek": "Середа",
+    "morningWeight": 108.9,
+    "bodyFatPercent": 30.2,
+    "visceralFat": 20.5,
+    "bodyFatMass": 32.9,
+    "musclePercent": 64.3,
+    "nutrition": {
+      "breakfast": {
+        "description": "",
+        "details": [],
+        "calories": 0
+      },
+      "lunch": {
+        "description": "",
+        "details": [],
+        "calories": 0
+      },
+      "dinner": {
+        "description": "",
+        "details": [],
+        "calories": 0
+      },
+      "snacks": {
+        "description": "",
+        "details": [],
+        "calories": 0
+      },
+      "totalCalories": 0,
+      "targetCalories": 2000,
+      "remaining": 2000
+    },
+    "type": "strength",
+    "title": "Силові: верх тіла",
+    "duration": 30,
+    "feeling": 5,
+    "exercises": [
+      {
+        "name": "Розминка",
+        "sets": "5 хв",
+        "completed": true
+      },
+      {
+        "name": "Віджимання",
+        "sets": "1 × 5",
+        "weight": null,
+        "completed": true
+      },
+      {
+        "name": "Жим гантелей вгору",
+        "sets": "1 × 10",
+        "weight": 11,
+        "completed": true,
+        "note": "Одна гантеля, піднімав двома руками"
+      },
+      {
+        "name": "Тяга гантелей",
+        "sets": "1 × 10",
+        "weight": 11,
+        "completed": true
+      },
+      {
+        "name": "Біцепс",
+        "sets": "3 × 12",
+        "weight": 11,
+        "completed": true
+      },
+      {
+        "name": "Тріцепс",
+        "sets": "3 × 10",
+        "weight": 11,
+        "completed": true
+      }
+    ],
+    "sleep": {
+      "duration": "7:03",
+      "score": {
+        "duration": "46/50",
+        "bedtime": "25/30",
+        "interruption": "20/20"
+      },
+      "phases": {
+        "rem": "2:00",
+        "core": "4:34",
+        "deep": "0:29"
+      },
+      "heartRate": {
+        "min": 44,
+        "max": 68
+      },
+      "respiratoryRate": {
+        "min": 14,
+        "max": 28
+      }
+    },
+    "appleWatch": {
+      "activeCalories": 76.5,
+      "avgHeartRate": 95,
+      "maxHeartRate": 118,
+      "note": "Без активної тренувальної сесії"
+    },
+    "notes": "Кріпатура є, але почувався добре"
+  }
+]
