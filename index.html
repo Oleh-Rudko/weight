@@ -325,6 +325,58 @@
       line-height: 1.4;
     }
 
+    .macros-card {
+      background: #0f3460;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .macro-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .macro-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .macro-label {
+      font-size: 12px;
+      color: #aaa;
+      width: 52px;
+      flex-shrink: 0;
+    }
+
+    .macro-bar-bg {
+      flex: 1;
+      height: 14px;
+      background: #1a1a2e;
+      border-radius: 7px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .macro-bar-fill {
+      height: 100%;
+      border-radius: 7px;
+      transition: width 0.3s;
+    }
+
+    .macro-values {
+      font-size: 12px;
+      color: #ccc;
+      width: 80px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .macro-values strong {
+      color: #fff;
+    }
+
     .no-data {
       text-align: center;
       padding: 40px 16px;
@@ -770,6 +822,37 @@
         summary.appendChild(right);
 
         nutritionCard.appendChild(summary);
+
+        // Macros
+        if (dayData.nutrition.totalMacros) {
+          var macrosDiv = createEl('div', 'macros-card');
+          var tm = dayData.nutrition.totalMacros;
+          var tgt = dayData.nutrition.targetMacros || { protein: 150, fat: 65, carbs: 200 };
+          var macroItems = [
+            { label: 'Білки', current: tm.protein, target: tgt.protein, color: '#4ecca3' },
+            { label: 'Жири', current: tm.fat, target: tgt.fat, color: '#ffa502' },
+            { label: 'Вуглеводи', current: tm.carbs, target: tgt.carbs, color: '#e94560' }
+          ];
+          macroItems.forEach(function(m) {
+            var row = createEl('div', 'macro-row');
+            row.appendChild(createEl('div', 'macro-label', m.label));
+            var barBg = createEl('div', 'macro-bar-bg');
+            var barFill = createEl('div', 'macro-bar-fill');
+            var pct = Math.min((m.current / m.target) * 100, 100);
+            barFill.style.width = pct + '%';
+            barFill.style.background = m.current > m.target ? '#ff4757' : m.color;
+            barBg.appendChild(barFill);
+            row.appendChild(barBg);
+            var vals = createEl('div', 'macro-values');
+            var valBold = createEl('strong', null, String(m.current));
+            valBold.style.color = '#fff';
+            vals.appendChild(valBold);
+            vals.appendChild(document.createTextNode(' / ' + m.target + ' г'));
+            row.appendChild(vals);
+            macrosDiv.appendChild(row);
+          });
+          nutritionCard.appendChild(macrosDiv);
+        }
 
         // Meals
         var meals = [

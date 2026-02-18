@@ -15,7 +15,8 @@
           "Кава чорна + 15 г молока: ~10 ккал",
           "Маленька мандаринка: ~30 ккал"
         ],
-        "calories": 310
+        "calories": 310,
+        "macros": { "protein": 6, "fat": 14, "carbs": 23 }
       },
       "lunch": {
         "description": "Суп + Лазанья + Салат + Банан",
@@ -25,7 +26,8 @@
           "Салат: ~175 ккал",
           "Банан (1 шт): ~100 ккал"
         ],
-        "calories": 975
+        "calories": 975,
+        "macros": { "protein": 31, "fat": 33, "carbs": 95 }
       },
       "dinner": {
         "description": "Рис з овочами + М'ясо + Броколі",
@@ -34,16 +36,20 @@
           "М'ясо (120 г): ~220 ккал",
           "Броколі (150 г): ~80 ккал"
         ],
-        "calories": 580
+        "calories": 580,
+        "macros": { "protein": 34, "fat": 16, "carbs": 55 }
       },
       "snacks": {
         "description": "",
         "details": [],
-        "calories": 0
+        "calories": 0,
+        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
       },
       "totalCalories": 1865,
-      "targetCalories": 2000,
-      "remaining": 135
+      "targetCalories": 2400,
+      "remaining": 535,
+      "totalMacros": { "protein": 71, "fat": 63, "carbs": 173 },
+      "targetMacros": { "protein": 160, "fat": 70, "carbs": 280 }
     },
     "type": "cardio",
     "title": "Кардіо - бокс",
@@ -69,28 +75,48 @@
     "musclePercent": 64.3,
     "nutrition": {
       "breakfast": {
-        "description": "",
-        "details": [],
-        "calories": 0
+        "description": "2 варених яйця + хліб з намазкою сиру і тунця + ковбаса 20г + яблуко + кава з вершками + 1.5 яйця скрамбл",
+        "details": [
+          "2 варених яйця: ~156 ккал",
+          "Хліб (1 шматок): ~80 ккал",
+          "Намазка сиру (~20г): ~50 ккал",
+          "Тунець (~30г): ~35 ккал",
+          "Ковбаса (20г): ~55 ккал",
+          "Велике яблуко (~200г): ~104 ккал",
+          "Кава з вершками (15г): ~45 ккал",
+          "1.5 яйця скрамбл: ~135 ккал"
+        ],
+        "calories": 660,
+        "macros": { "protein": 37, "fat": 32, "carbs": 43 }
       },
       "lunch": {
-        "description": "",
-        "details": [],
-        "calories": 0
+        "description": "Щавлевий суп 250г + Картопля пюре 250г + Куряча грудка з ананасом ~180г + Салат овочевий з олією",
+        "details": [
+          "Щавлевий суп (250г): ~85 ккал",
+          "Картопля пюре (250г): ~260 ккал",
+          "Куряча грудка з ананасом (~180г курки): ~350 ккал",
+          "Салат овочевий (помідори, огірки, капуста, груша + олія, ~90г): ~115 ккал"
+        ],
+        "calories": 810,
+        "macros": { "protein": 54, "fat": 23, "carbs": 64 }
       },
       "dinner": {
         "description": "",
         "details": [],
-        "calories": 0
+        "calories": 0,
+        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
       },
       "snacks": {
         "description": "",
         "details": [],
-        "calories": 0
+        "calories": 0,
+        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
       },
-      "totalCalories": 0,
-      "targetCalories": 2000,
-      "remaining": 2000
+      "totalCalories": 1470,
+      "targetCalories": 2400,
+      "remaining": 930,
+      "totalMacros": { "protein": 91, "fat": 55, "carbs": 107 },
+      "targetMacros": { "protein": 160, "fat": 70, "carbs": 280 }
     },
     "type": "strength",
     "title": "Силові: верх тіла",
