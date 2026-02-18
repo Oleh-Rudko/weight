@@ -849,7 +849,7 @@
     }
 
     // Statistics
-    function drawCombinedChart(canvas, labels, series) {
+    function drawCombinedChart(canvas, labels, series, sharedScale) {
       var ctx = canvas.getContext('2d');
       var dpr = window.devicePixelRatio || 1;
       var rect = canvas.getBoundingClientRect();
@@ -859,7 +859,7 @@
 
       var w = rect.width;
       var h = rect.height;
-      var padL = 16;
+      var padL = sharedScale ? 40 : 16;
       var padR = 16;
       var padT = 16;
       var padB = 32;
@@ -869,19 +869,38 @@
       var dots = [];
       if (labels.length === 0) return dots;
 
-      // Grid lines
+      // Compute shared scale from all series
+      var gMin, gMax, gRange;
+      if (sharedScale) {
+        var allVals = [];
+        series.forEach(function(s) { allVals = allVals.concat(s.values); });
+        gMin = Math.min.apply(null, allVals);
+        gMax = Math.max.apply(null, allVals);
+        var pad = (gMax - gMin) * 0.1 || 1;
+        gMin = Math.floor(gMin - pad);
+        gMax = Math.ceil(gMax + pad);
+        gRange = gMax - gMin;
+      }
+
+      // Grid lines + Y labels
       ctx.strokeStyle = '#333';
       ctx.lineWidth = 0.5;
+      ctx.font = '11px -apple-system, sans-serif';
+      ctx.fillStyle = '#888';
+      ctx.textAlign = 'right';
       for (var g = 0; g <= 4; g++) {
         var gy = padT + chartH - (g / 4) * chartH;
         ctx.beginPath();
         ctx.moveTo(padL, gy);
         ctx.lineTo(padL + chartW, gy);
         ctx.stroke();
+        if (sharedScale) {
+          var gVal = gMin + (g / 4) * gRange;
+          ctx.fillText(Math.round(gVal) + '%', padL - 6, gy + 4);
+        }
       }
 
       // X labels
-      ctx.font = '11px -apple-system, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillStyle = '#888';
       labels.forEach(function(label, i) {
@@ -889,15 +908,20 @@
         ctx.fillText(label, x, h - 6);
       });
 
-      // Draw each series normalized to its own min/max
+      // Draw each series
       series.forEach(function(s) {
         var vals = s.values;
-        var min = Math.min.apply(null, vals);
-        var max = Math.max.apply(null, vals);
-        var range = max - min || 1;
-        min = min - range * 0.15;
-        max = max + range * 0.15;
-        range = max - min;
+        var min, max, range;
+        if (sharedScale) {
+          min = gMin; max = gMax; range = gRange;
+        } else {
+          min = Math.min.apply(null, vals);
+          max = Math.max.apply(null, vals);
+          range = max - min || 1;
+          min = min - range * 0.15;
+          max = max + range * 0.15;
+          range = max - min;
+        }
 
         // Line
         ctx.beginPath();
@@ -927,7 +951,7 @@
       return dots;
     }
 
-    function buildChartCard(title, labels, seriesData, app) {
+    function buildChartCard(title, labels, seriesData, app, sharedScale) {
       var card = createEl('div', 'chart-card');
       card.style.position = 'relative';
       card.appendChild(createEl('div', 'workout-type', title));
@@ -951,7 +975,7 @@
       card.appendChild(tooltip);
       app.appendChild(card);
 
-      var dots = drawCombinedChart(canvas, labels, seriesData);
+      var dots = drawCombinedChart(canvas, labels, seriesData, sharedScale);
 
       function handleMove(clientX, clientY) {
         var rect = canvas.getBoundingClientRect();
@@ -1018,10 +1042,10 @@
         { values: weightValues, color: '#e94560', title: 'Вага', unit: 'кг' }
       ], app);
 
-      // Chart 2: Body composition (%)
+      // Chart 2: Body composition (%) — shared Y-axis
       var bodySeries = [
         { key: 'bodyFatPercent', color: '#ff6b6b', title: 'Body Fat', unit: '%' },
-        { key: 'visceralFat', color: '#ffa502', title: 'Віцеральний жир', unit: '' },
+        { key: 'visceralFat', color: '#ffa502', title: 'Віцеральний жир', unit: '%' },
         { key: 'musclePercent', color: '#4ecca3', title: "М'язи", unit: '%' }
       ];
       var bodySeries2 = [];
@@ -1032,7 +1056,7 @@
         }
       });
       if (bodySeries2.length > 0) {
-        buildChartCard('Склад тіла', labels, bodySeries2, app);
+        buildChartCard('Склад тіла', labels, bodySeries2, app, true);
       }
     }
 
