@@ -104,11 +104,11 @@
         "description": "Вермішель 100г + М'ясо болоньезе ~275г + Салат з буряку 100г",
         "details": [
           "Вермішель варена (100г): ~140 ккал",
-          "М'ясо болоньезе (~275г): ~330 ккал",
-          "Салат з буряку (100г): ~95 ккал"
+          "М'ясо болоньезе (~275г, дієтичне): ~290 ккал",
+          "Салат з буряку (100г, трохи олії): ~75 ккал"
         ],
-        "calories": 565,
-        "macros": { "protein": 29, "fat": 26, "carbs": 51 }
+        "calories": 505,
+        "macros": { "protein": 29, "fat": 18, "carbs": 51 }
       },
       "snacks": {
         "description": "Кешью жменя (~30г)",
@@ -118,10 +118,10 @@
         "calories": 170,
         "macros": { "protein": 5, "fat": 13, "carbs": 9 }
       },
-      "totalCalories": 2205,
+      "totalCalories": 2145,
       "targetCalories": 2400,
-      "remaining": 195,
-      "totalMacros": { "protein": 125, "fat": 94, "carbs": 167 },
+      "remaining": 255,
+      "totalMacros": { "protein": 125, "fat": 86, "carbs": 167 },
       "targetMacros": { "protein": 160, "fat": 70, "carbs": 280 }
     },
     "type": "strength",
