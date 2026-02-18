@@ -927,6 +927,77 @@
       return dots;
     }
 
+    function buildChartCard(title, labels, seriesData, app) {
+      var card = createEl('div', 'chart-card');
+      card.style.position = 'relative';
+      card.appendChild(createEl('div', 'workout-type', title));
+
+      var legend = createEl('div', 'chart-legend');
+      seriesData.forEach(function(s) {
+        var item = createEl('div', 'legend-item');
+        var dot = createEl('div', 'legend-dot');
+        dot.style.background = s.color;
+        item.appendChild(dot);
+        var lastVal = s.values[s.values.length - 1];
+        item.appendChild(document.createTextNode(s.title + ': ' + lastVal + (s.unit ? ' ' + s.unit : '')));
+        legend.appendChild(item);
+      });
+      card.appendChild(legend);
+
+      var canvas = document.createElement('canvas');
+      card.appendChild(canvas);
+
+      var tooltip = createEl('div', 'chart-tooltip');
+      card.appendChild(tooltip);
+      app.appendChild(card);
+
+      var dots = drawCombinedChart(canvas, labels, seriesData);
+
+      function handleMove(clientX, clientY) {
+        var rect = canvas.getBoundingClientRect();
+        var mx = clientX - rect.left;
+        var my = clientY - rect.top;
+        var closest = null;
+        var closestDist = 24;
+        dots.forEach(function(d) {
+          var dist = Math.sqrt((d.x - mx) * (d.x - mx) + (d.y - my) * (d.y - my));
+          if (dist < closestDist) { closestDist = dist; closest = d; }
+        });
+        if (!closest) { tooltip.style.display = 'none'; return; }
+
+        while (tooltip.firstChild) tooltip.removeChild(tooltip.firstChild);
+        var dateDiv = createEl('div', null, labels[closest.dateIndex]);
+        dateDiv.style.color = '#888';
+        dateDiv.style.marginBottom = '4px';
+        tooltip.appendChild(dateDiv);
+        seriesData.forEach(function(s) {
+          var v = s.values[closest.dateIndex];
+          if (v != null) {
+            var row = document.createElement('div');
+            var lbl = createEl('span', null, s.title + ': ');
+            lbl.style.color = s.color;
+            row.appendChild(lbl);
+            row.appendChild(document.createTextNode(v + (s.unit ? ' ' + s.unit : '')));
+            tooltip.appendChild(row);
+          }
+        });
+        tooltip.style.display = 'block';
+        var cardRect = card.getBoundingClientRect();
+        var tx = closest.x + rect.left - cardRect.left + 12;
+        var ty = closest.y + rect.top - cardRect.top - 16;
+        if (tx + tooltip.offsetWidth > card.offsetWidth - 8) {
+          tx = closest.x + rect.left - cardRect.left - tooltip.offsetWidth - 12;
+        }
+        tooltip.style.left = tx + 'px';
+        tooltip.style.top = ty + 'px';
+      }
+
+      canvas.addEventListener('mousemove', function(e) { handleMove(e.clientX, e.clientY); });
+      canvas.addEventListener('mouseleave', function() { tooltip.style.display = 'none'; });
+      canvas.addEventListener('touchstart', function(e) { handleMove(e.touches[0].clientX, e.touches[0].clientY); });
+      canvas.addEventListener('touchend', function() { tooltip.style.display = 'none'; });
+    }
+
     function showStats() {
       var nav = document.getElementById('daysNav');
       while (nav.firstChild) nav.removeChild(nav.firstChild);
@@ -941,115 +1012,28 @@
 
       var labels = workoutData.map(function(d) { return d.date.substring(5); });
 
-      var metrics = [
-        { title: 'Вага', key: 'morningWeight', color: '#e94560', unit: 'кг' },
-        { title: 'Body Fat', key: 'bodyFatPercent', color: '#ff6b6b', unit: '%' },
-        { title: 'Віцеральний жир', key: 'visceralFat', color: '#ffa502', unit: '' },
-        { title: "М'язи", key: 'musclePercent', color: '#4ecca3', unit: '%' }
+      // Chart 1: Weight (kg)
+      var weightValues = workoutData.map(function(d) { return d.morningWeight; });
+      buildChartCard('Вага', labels, [
+        { values: weightValues, color: '#e94560', title: 'Вага', unit: 'кг' }
+      ], app);
+
+      // Chart 2: Body composition (%)
+      var bodySeries = [
+        { key: 'bodyFatPercent', color: '#ff6b6b', title: 'Body Fat', unit: '%' },
+        { key: 'visceralFat', color: '#ffa502', title: 'Віцеральний жир', unit: '' },
+        { key: 'musclePercent', color: '#4ecca3', title: "М'язи", unit: '%' }
       ];
-
-      var card = createEl('div', 'chart-card');
-      card.appendChild(createEl('div', 'workout-type', 'Прогрес'));
-
-      // Legend with current values
-      var legend = createEl('div', 'chart-legend');
-      var seriesData = [];
-
-      metrics.forEach(function(m) {
+      var bodySeries2 = [];
+      bodySeries.forEach(function(m) {
         var values = workoutData.map(function(d) { return d[m.key]; });
-        if (values.every(function(v) { return v == null; })) return;
-        seriesData.push({ values: values, color: m.color, title: m.title, unit: m.unit });
-
-        var item = createEl('div', 'legend-item');
-        var dot = createEl('div', 'legend-dot');
-        dot.style.background = m.color;
-        item.appendChild(dot);
-
-        var lastVal = values[values.length - 1];
-        var text = m.title + ': ' + lastVal + (m.unit ? ' ' + m.unit : '');
-        item.appendChild(document.createTextNode(text));
-        legend.appendChild(item);
+        if (!values.every(function(v) { return v == null; })) {
+          bodySeries2.push({ values: values, color: m.color, title: m.title, unit: m.unit });
+        }
       });
-
-      card.appendChild(legend);
-
-      var canvas = document.createElement('canvas');
-      card.appendChild(canvas);
-
-      var tooltip = createEl('div', 'chart-tooltip');
-      card.style.position = 'relative';
-      card.appendChild(tooltip);
-      app.appendChild(card);
-
-      var dots = drawCombinedChart(canvas, labels, seriesData);
-
-      function handleMove(clientX, clientY) {
-        var rect = canvas.getBoundingClientRect();
-        var mx = clientX - rect.left;
-        var my = clientY - rect.top;
-
-        // Find closest dot within 24px
-        var closest = null;
-        var closestDist = 24;
-        dots.forEach(function(d) {
-          var dist = Math.sqrt((d.x - mx) * (d.x - mx) + (d.y - my) * (d.y - my));
-          if (dist < closestDist) {
-            closestDist = dist;
-            closest = d;
-          }
-        });
-
-        if (!closest) {
-          tooltip.style.display = 'none';
-          return;
-        }
-
-        // Build tooltip: show all series values for that date
-        while (tooltip.firstChild) tooltip.removeChild(tooltip.firstChild);
-
-        var dateDiv = createEl('div', null, labels[closest.dateIndex]);
-        dateDiv.style.color = '#888';
-        dateDiv.style.marginBottom = '4px';
-        tooltip.appendChild(dateDiv);
-
-        seriesData.forEach(function(s) {
-          var v = s.values[closest.dateIndex];
-          if (v != null) {
-            var row = document.createElement('div');
-            var label = createEl('span', null, s.title + ': ');
-            label.style.color = s.color;
-            row.appendChild(label);
-            row.appendChild(document.createTextNode(v + (s.unit ? ' ' + s.unit : '')));
-            tooltip.appendChild(row);
-          }
-        });
-
-        tooltip.style.display = 'block';
-
-        // Position tooltip relative to card
-        var cardRect = card.getBoundingClientRect();
-        var tx = closest.x + rect.left - cardRect.left + 12;
-        var ty = closest.y + rect.top - cardRect.top - 16;
-        if (tx + tooltip.offsetWidth > card.offsetWidth - 8) {
-          tx = closest.x + rect.left - cardRect.left - tooltip.offsetWidth - 12;
-        }
-        tooltip.style.left = tx + 'px';
-        tooltip.style.top = ty + 'px';
+      if (bodySeries2.length > 0) {
+        buildChartCard('Склад тіла', labels, bodySeries2, app);
       }
-
-      canvas.addEventListener('mousemove', function(e) {
-        handleMove(e.clientX, e.clientY);
-      });
-      canvas.addEventListener('mouseleave', function() {
-        tooltip.style.display = 'none';
-      });
-      canvas.addEventListener('touchstart', function(e) {
-        var t = e.touches[0];
-        handleMove(t.clientX, t.clientY);
-      });
-      canvas.addEventListener('touchend', function() {
-        tooltip.style.display = 'none';
-      });
     }
 
     // Tab handlers
