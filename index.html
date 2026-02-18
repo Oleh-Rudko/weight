@@ -339,7 +339,7 @@
   <h1>My Workout</h1>
 
   <div class="tabs">
-    <button class="tab-btn active" id="tabWorkout">План тренувань</button>
+    <button class="tab-btn" id="tabWorkout">План тренувань</button>
     <button class="tab-btn" id="tabTracking">Мої дані</button>
   </div>
 
@@ -530,11 +530,12 @@
     }
 
     // Tabs and tracking mode
-    var currentMode = 'workout';
+    var currentMode = localStorage.getItem('activeTab') || 'workout';
     var selectedTrackingDate = null;
 
     function switchTab(mode) {
       currentMode = mode;
+      localStorage.setItem('activeTab', mode);
 
       var tabWorkout = document.getElementById('tabWorkout');
       var tabTracking = document.getElementById('tabTracking');
@@ -573,9 +574,11 @@
         nav.appendChild(btn);
       });
 
-      // Show first day by default
+      // Show today if exists, otherwise last day
       if (!selectedTrackingDate && workoutData.length > 0) {
-        selectedTrackingDate = workoutData[0].date;
+        var today = new Date().toISOString().substring(0, 10);
+        var todayEntry = workoutData.find(function(d) { return d.date === today; });
+        selectedTrackingDate = todayEntry ? today : workoutData[workoutData.length - 1].date;
       }
 
       var dayData = workoutData.find(function(d) { return d.date === selectedTrackingDate; });
@@ -729,7 +732,7 @@
       switchTab('tracking');
     });
 
-    // Load data from logs and show today
+    // Load data from logs and restore tab
     function loadData() {
       var now = new Date();
       var file = 'logs/' + now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '.json';
@@ -737,11 +740,11 @@
         .then(function(r) { return r.json(); })
         .then(function(data) {
           workoutData = data;
-          showDay(now.getDay());
+          switchTab(currentMode);
         })
         .catch(function() {
           workoutData = [];
-          showDay(now.getDay());
+          switchTab(currentMode);
         });
     }
 
