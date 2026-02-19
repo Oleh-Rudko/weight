@@ -230,11 +230,11 @@
         "details": [
           "Кава чорна + вершки рідкі (~15г): ~35 ккал",
           "Хліб чорний (2 шматки, ~70г): ~140 ккал",
-          "Паштет з курячих печінок домашній (~50г): ~115 ккал",
+          "Паштет з курячих печінок домашній (~90г, грубий шар): ~200 ккал",
           "2 варених яйця: ~156 ккал"
         ],
-        "calories": 446,
-        "macros": { "protein": 25, "fat": 23, "carbs": 30 }
+        "calories": 531,
+        "macros": { "protein": 30, "fat": 30, "carbs": 31 }
       },
       "lunch": {
         "description": "",
@@ -254,10 +254,10 @@
         "calories": 0,
         "macros": { "protein": 0, "fat": 0, "carbs": 0 }
       },
-      "totalCalories": 446,
+      "totalCalories": 531,
       "targetCalories": 2400,
-      "remaining": 1954,
-      "totalMacros": { "protein": 25, "fat": 23, "carbs": 30 },
+      "remaining": 1869,
+      "totalMacros": { "protein": 30, "fat": 30, "carbs": 31 },
       "targetMacros": { "protein": 160, "fat": 70, "carbs": 280 }
     },
     "type": "cardio",
