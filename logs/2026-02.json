@@ -246,10 +246,16 @@
         "macros": { "protein": 47, "fat": 34, "carbs": 55 }
       },
       "dinner": {
-        "description": "",
-        "details": [],
-        "calories": 0,
-        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
+        "description": "Картопля з духовки 300г + Засолена риба 2×80г + Запіканка рисова локшина з ковбасою 100г + Чай + 2 цукерки",
+        "details": [
+          "Картопля з духовки (300г): ~310 ккал",
+          "Засолена риба (2 шматки по 80г = 160г): ~320 ккал",
+          "Запіканка рисова локшина з ковбасою (100г): ~180 ккал",
+          "Чай: 0 ккал",
+          "Цукерки (2 шт по 10г = 20г): ~86 ккал"
+        ],
+        "calories": 896,
+        "macros": { "protein": 45, "fat": 37, "carbs": 93 }
       },
       "snacks": {
         "description": "",
@@ -257,10 +263,10 @@
         "calories": 0,
         "macros": { "protein": 0, "fat": 0, "carbs": 0 }
       },
-      "totalCalories": 1246,
+      "totalCalories": 2142,
       "targetCalories": 2400,
-      "remaining": 1154,
-      "totalMacros": { "protein": 77, "fat": 64, "carbs": 86 },
+      "remaining": 258,
+      "totalMacros": { "protein": 122, "fat": 101, "carbs": 179 },
       "targetMacros": { "protein": 160, "fat": 70, "carbs": 280 }
     },
     "type": "cardio",
