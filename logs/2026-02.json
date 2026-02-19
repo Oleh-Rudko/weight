@@ -194,5 +194,84 @@
       "note": "Без активної тренувальної сесії"
     },
     "notes": "Кріпатура є, але почувався добре"
+  },
+  {
+    "date": "2026-02-19",
+    "dayOfWeek": "Четвер",
+    "morningWeight": 108.55,
+    "bodyFatPercent": 30.1,
+    "visceralFat": 20.0,
+    "bodyFatMass": 32.7,
+    "musclePercent": 64.5,
+    "sleep": {
+      "duration": "7:27",
+      "score": {
+        "duration": "47/50",
+        "bedtime": "24/30",
+        "interruption": "19/20"
+      },
+      "phases": {
+        "rem": "2:17",
+        "core": "4:34",
+        "deep": "0:36"
+      },
+      "heartRate": {
+        "min": 42,
+        "max": 67
+      },
+      "respiratoryRate": {
+        "min": 14,
+        "max": 22
+      }
+    },
+    "nutrition": {
+      "breakfast": {
+        "description": "Кава з вершками + 2 шматки чорного хліба з паштетом з курячих печінок + 2 варених яйця",
+        "details": [
+          "Кава чорна + вершки рідкі (~15г): ~35 ккал",
+          "Хліб чорний (2 шматки, ~70г): ~140 ккал",
+          "Паштет з курячих печінок домашній (~50г): ~115 ккал",
+          "2 варених яйця: ~156 ккал"
+        ],
+        "calories": 446,
+        "macros": { "protein": 25, "fat": 23, "carbs": 30 }
+      },
+      "lunch": {
+        "description": "",
+        "details": [],
+        "calories": 0,
+        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
+      },
+      "dinner": {
+        "description": "",
+        "details": [],
+        "calories": 0,
+        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
+      },
+      "snacks": {
+        "description": "",
+        "details": [],
+        "calories": 0,
+        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
+      },
+      "totalCalories": 446,
+      "targetCalories": 2400,
+      "remaining": 1954,
+      "totalMacros": { "protein": 25, "fat": 23, "carbs": 30 },
+      "targetMacros": { "protein": 160, "fat": 70, "carbs": 280 }
+    },
+    "type": "cardio",
+    "title": "Кардіо - бокс",
+    "cardioType": "Shadow Boxing",
+    "duration": 28,
+    "feeling": 5,
+    "appleWatch": {
+      "duration": 28,
+      "activeCalories": 321,
+      "totalCalories": 391,
+      "avgHeartRate": 150,
+      "maxHeartRate": 178
+    },
+    "notes": "Інтенсивніше на 50% ніж минулий раз, майже без зупинок"
   }
 ]
