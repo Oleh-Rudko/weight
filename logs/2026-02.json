@@ -237,13 +237,13 @@
         "macros": { "protein": 30, "fat": 30, "carbs": 31 }
       },
       "lunch": {
-        "description": "Рибний суп щавлевий 200г + Рисові макарони з м'ясом і овочами 400г",
+        "description": "Рибний суп щавлевий 200г + Рисові макарони з м'ясом (~135г свинини) і овочами 400г",
         "details": [
           "Рибний суп щавлевий (200г): ~90 ккал",
-          "Рисові макарони з м'ясом і овочами (400г): ~520 ккал"
+          "Рисові макарони з м'ясом і овочами (400г, ~135г свинини): ~625 ккал"
         ],
-        "calories": 610,
-        "macros": { "protein": 31, "fat": 21, "carbs": 68 }
+        "calories": 715,
+        "macros": { "protein": 47, "fat": 34, "carbs": 55 }
       },
       "dinner": {
         "description": "",
@@ -257,10 +257,10 @@
         "calories": 0,
         "macros": { "protein": 0, "fat": 0, "carbs": 0 }
       },
-      "totalCalories": 1141,
+      "totalCalories": 1246,
       "targetCalories": 2400,
-      "remaining": 1259,
-      "totalMacros": { "protein": 61, "fat": 51, "carbs": 99 },
+      "remaining": 1154,
+      "totalMacros": { "protein": 77, "fat": 64, "carbs": 86 },
       "targetMacros": { "protein": 160, "fat": 70, "carbs": 280 }
     },
     "type": "cardio",
