@@ -282,5 +282,77 @@
       "maxHeartRate": 178
     },
     "notes": "Інтенсивніше на 50% ніж минулий раз, майже без зупинок"
+  },
+  {
+    "date": "2026-02-20",
+    "dayOfWeek": "П'ятниця",
+    "morningWeight": 109.05,
+    "bodyFatPercent": 30.2,
+    "visceralFat": 20.5,
+    "bodyFatMass": 33.0,
+    "musclePercent": 64.2,
+    "sleep": {
+      "duration": "6:47",
+      "score": {
+        "duration": "43/50",
+        "bedtime": "30/30",
+        "interruption": "19/20"
+      },
+      "phases": {
+        "rem": "1:53",
+        "core": "3:34",
+        "deep": "1:20"
+      },
+      "awakeMinutes": 13,
+      "heartRate": {
+        "min": 43,
+        "max": 73
+      },
+      "respiratoryRate": {
+        "min": 14,
+        "max": 22.5
+      }
+    },
+    "nutrition": {
+      "breakfast": {
+        "description": "2 варених яйця + чорний хліб + паштет з печінки",
+        "details": [
+          "2 варених яйця (~140г): ~156 ккал",
+          "Чорний хліб (1 шматок, ~35г): ~70 ккал",
+          "Паштет з печінки (~50г): ~115 ккал"
+        ],
+        "calories": 341,
+        "macros": { "protein": 22, "fat": 20, "carbs": 17 }
+      },
+      "lunch": {
+        "description": "Курячий суп + плов 300г + 1 кекс",
+        "details": [
+          "Курячий суп (~300г): ~120 ккал",
+          "Плов (300г): ~330 ккал",
+          "Кекс (1 шт, ~80г): ~280 ккал"
+        ],
+        "calories": 730,
+        "macros": { "protein": 24, "fat": 26, "carbs": 94 }
+      },
+      "dinner": {
+        "description": "",
+        "details": [],
+        "calories": 0,
+        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
+      },
+      "snacks": {
+        "description": "",
+        "details": [],
+        "calories": 0,
+        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
+      },
+      "totalCalories": 1071,
+      "targetCalories": 2400,
+      "remaining": 1329,
+      "totalMacros": { "protein": 46, "fat": 46, "carbs": 111 },
+      "targetMacros": { "protein": 160, "fat": 70, "carbs": 280 }
+    },
+    "type": "rest",
+    "notes": "День відпочинку — було важко"
   }
 ]
