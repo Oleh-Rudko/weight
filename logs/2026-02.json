@@ -335,10 +335,13 @@
         "macros": { "protein": 24, "fat": 26, "carbs": 94 }
       },
       "dinner": {
-        "description": "",
-        "details": [],
-        "calories": 0,
-        "macros": { "protein": 0, "fat": 0, "carbs": 0 }
+        "description": "Плов 300г + Мигдаль жменя",
+        "details": [
+          "Плов (300г): ~330 ккал",
+          "Мигдаль (жменя, ~30г): ~175 ккал"
+        ],
+        "calories": 505,
+        "macros": { "protein": 18, "fat": 27, "carbs": 48 }
       },
       "snacks": {
         "description": "",
@@ -346,10 +349,10 @@
         "calories": 0,
         "macros": { "protein": 0, "fat": 0, "carbs": 0 }
       },
-      "totalCalories": 1071,
+      "totalCalories": 1576,
       "targetCalories": 2400,
-      "remaining": 1329,
-      "totalMacros": { "protein": 46, "fat": 46, "carbs": 111 },
+      "remaining": 824,
+      "totalMacros": { "protein": 64, "fat": 73, "carbs": 159 },
       "targetMacros": { "protein": 160, "fat": 70, "carbs": 280 }
     },
     "type": "rest",
